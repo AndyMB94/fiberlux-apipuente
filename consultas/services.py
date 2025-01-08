@@ -17,6 +17,20 @@ def limpiar_registros_antiguos():
     eliminados = DatosEnviados.objects.filter(fecha_consulta__lte=fecha_limite).delete()
     logger.info(f"Registros eliminados por antigüedad: {eliminados}")
 
+def enviar_json_al_bot(data):
+    """
+    Envía un JSON al bot con los datos del registro.
+    """
+    bot_endpoint = "https://url-del-bot.com/api/endpoint"  # Cambia esta URL por la del bot
+    try:
+        response = requests.post(bot_endpoint, json=data)
+        response.raise_for_status()
+        logger.info(f"JSON enviado al bot correctamente: {data}")
+        return {"message": "JSON enviado al bot correctamente"}
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error al enviar JSON al bot: {e}")
+        return {"error": str(e)}
+
 def consumir_datos_externos(numero_documento, numero_telefono):
     """
     Consume la API externa y gestiona los registros en la base de datos.
@@ -80,6 +94,16 @@ def consumir_datos_externos(numero_documento, numero_telefono):
                 enviado_bot=True
             )
             logger.info(f"Nuevo registro creado con enviado_bot=1: {nuevo_registro}")
+
+            # Si enviado_bot=1, enviar JSON al bot
+            json_data = {
+                "id_sig": nuevo_registro.id_sig,
+                "tipo_documento": nuevo_registro.tipo_documento,
+                "numero_documento": nuevo_registro.numero_documento,
+                "numero_telefono": nuevo_registro.numero_telefono,
+                "operadora": nuevo_registro.operadora
+            }
+            enviar_json_al_bot(json_data)
 
         return {"message": "Datos procesados correctamente"}
 
