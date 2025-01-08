@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime, timedelta
-from django.utils.timezone import make_aware, now
+from django.utils.timezone import now
 from .models import DatosEnviados
 import logging
 
@@ -57,7 +57,7 @@ def consumir_datos_externos(numero_documento, numero_telefono):
         ).exists()
 
         if existe_registro:
-            # Crear un nuevo registro con estado=0 y enviado_bot=0
+            # Crear un nuevo registro con enviado_bot=0
             nuevo_registro = DatosEnviados.objects.create(
                 id_sig=id_sig,
                 tipo_documento=tipo_documento,
@@ -65,12 +65,11 @@ def consumir_datos_externos(numero_documento, numero_telefono):
                 numero_telefono=numero_telefono,
                 operadora=operadora,
                 fecha_consulta=now(),  # Usa la fecha y hora actual con zona horaria
-                estado=False,
                 enviado_bot=False
             )
-            logger.info(f"Nuevo registro creado con estado=0 y enviado_bot=0: {nuevo_registro}")
+            logger.info(f"Nuevo registro creado con enviado_bot=0: {nuevo_registro}")
         else:
-            # Crear un nuevo registro con estado=1 y enviado_bot=1
+            # Crear un nuevo registro con enviado_bot=1
             nuevo_registro = DatosEnviados.objects.create(
                 id_sig=id_sig,
                 tipo_documento=tipo_documento,
@@ -78,10 +77,9 @@ def consumir_datos_externos(numero_documento, numero_telefono):
                 numero_telefono=numero_telefono,
                 operadora=operadora,
                 fecha_consulta=now(),  # Usa la fecha y hora actual con zona horaria
-                estado=True,
                 enviado_bot=True
             )
-            logger.info(f"Nuevo registro creado con estado=1 y enviado_bot=1: {nuevo_registro}")
+            logger.info(f"Nuevo registro creado con enviado_bot=1: {nuevo_registro}")
 
         return {"message": "Datos procesados correctamente"}
 

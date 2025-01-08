@@ -12,7 +12,6 @@ class DatosEnviados(models.Model):
     fecha_consulta = models.DateTimeField(auto_now_add=True)
     enviado_bot = models.BooleanField(default=False)
     respuesta_bot = models.TextField(null=True, blank=True)
-    estado = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.id_sig} - {self.numero_documento}"
