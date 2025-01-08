@@ -21,7 +21,7 @@ def enviar_json_al_bot(data):
     """
     Envía un JSON al bot con los datos del registro.
     """
-    bot_endpoint = "https://url-del-bot.com/api/endpoint"  # Cambia esta URL por la del bot
+    bot_endpoint = "https://url-del-bot.com/api/receive-data"  # Cambia esta URL por la del bot
     try:
         response = requests.post(bot_endpoint, json=data)
         response.raise_for_status()
@@ -97,6 +97,7 @@ def consumir_datos_externos(numero_documento, numero_telefono):
 
             # Si enviado_bot=1, enviar JSON al bot
             json_data = {
+                "id": nuevo_registro.id,
                 "id_sig": nuevo_registro.id_sig,
                 "tipo_documento": nuevo_registro.tipo_documento,
                 "numero_documento": nuevo_registro.numero_documento,
